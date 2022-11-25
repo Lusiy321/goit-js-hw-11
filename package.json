@@ -18,10 +18,11 @@
     "url": "https://github.com/goitacademy/parcel-project-template/issues"
   },
   "dependencies": {
+    "babel": "^6.23.0",
     "lodash.debounce": "^4.0.8",
     "modern-normalize": "^1.1.0",
     "notiflix": "^3.2.5",
-    "simplelightbox": "^2.10.4"
+    "simplelightbox": "^2.11.0"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.6.0",

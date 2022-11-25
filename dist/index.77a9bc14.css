@@ -15,6 +15,7 @@ header {
 
 section {
   margin: 80px;
+  display: flex;
 }
 
 body {
@@ -59,79 +60,62 @@ body {
   border: 2px solid #fff;
 }
 
-li {
-  align-items: center;
-  gap: 10px;
-  margin-top: 30px;
-  font-size: 22px;
-  font-weight: 700;
-  line-height: 1.8;
+.gallery {
+  flex-wrap: wrap;
+  gap: 30px;
   display: flex;
+}
+
+.photo-card {
+  width: 370px;
+  background-color: #fff;
+  border: 1px solid #fff;
+  border-top: none;
+  flex-wrap: wrap;
+  margin: 10px;
+  transition-property: color, background-color, box-shadow, fill;
+  transition-duration: .25s;
+  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+  display: flex;
+}
+
+.photo-card:hover, .photo-card:focus {
+  cursor: pointer;
+  opacity: 1;
+  transition-property: color, background-color, box-shadow, opacity, transform;
+  transition-duration: .25s;
+  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
+  transform: translateY(0);
+  box-shadow: 0 1px 1px #0000001f, 0 4px 4px #0000000f, 1px 4px 6px #00000029;
 }
 
 a {
-  gap: 30px;
+  color: #212121;
   text-decoration: none;
-  display: flex;
-}
-
-h1 {
-  margin-left: 41%;
 }
 
 img {
-  width: 160px;
-  height: auto;
+  width: 370px;
+  height: 260px;
+  object-fit: cover;
+  margin-left: auto;
+  margin-right: auto;
+  display: block;
 }
 
-.country-list {
-  margin-left: 28%;
+.info {
+  text-align: center;
+  align-items: center;
+  margin: 0 auto;
+  display: flex;
 }
 
-.country-info {
-  width: 300px;
-  margin-top: 50px;
-  margin-left: 38%;
-}
-
-.inf {
-  color: #7e6e40;
-  font-size: 22px;
-  font-style: italic;
-}
-
-@media screen and (max-width: 767px) {
-  .country-list {
-    margin-left: auto;
-  }
-
-  .country-info {
-    width: 300px;
-    margin-top: 50px;
-    margin-left: 10px;
-  }
-
-  h1 {
-    margin-top: 80px;
-    margin-left: 5%;
-  }
-
-  #search-box {
-    font: inherit;
-    width: 320px;
-    border: 2px solid #fff;
-    border-radius: 10px;
-    margin-top: -30px;
-    margin-bottom: 16px;
-    margin-left: 5%;
-    padding: 8px;
-    box-shadow: 10px 5px 5px #212121;
-  }
-
-  img {
-    width: 100px;
-    height: 80px;
-  }
+.info-item {
+  letter-spacing: .03em;
+  color: var(--contacts-color);
+  font-size: 14px;
+  line-height: 1.87;
+  display: flex;
 }
 
 body.hidden-scroll {
