@@ -10,7 +10,34 @@
 </head>
 
 <body>
-  <div class="gallery"></div>
+  <header>
+    <form class="search-form" id="search-form">
+      <input type="text" name="searchQuery" id="search-box" autocomplete="off" placeholder="Search images..." />
+      <button type="submit" class="search_btn"></button>
+    </form>
+  </header>
+  <section>
+    <div class="gallery">
+      <div class="photo-card">
+        <img src="./img/search.png" alt="" loading="lazy" />
+        <div class="info">
+          <p class="info-item">
+            <b>Likes</b>
+          </p>
+          <p class="info-item">
+            <b>Views</b>
+          </p>
+          <p class="info-item">
+            <b>Comments</b>
+          </p>
+          <p class="info-item">
+            <b>Downloads</b>
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <script src="index.js" type="module"></script>
 </body>
 
