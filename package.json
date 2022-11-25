@@ -1,31 +1,27 @@
 {
-  "name": "goit-js-hw-08",
+  "name": "goit-js-hw-11",
   "version": "2.0.0",
   "description": "",
-  "homepage": "https://github.com/Lusiy321/goit-js-hw-10",
+  "homepage": "https://github.com/Lusiy321/goit-js-hw-11",
   "scripts": {
     "start": "parcel src/*.html",
-    "build": "parcel build src/*.html --public-url /goit-js-hw-10/"
+    "build": "parcel build src/*.html --public-url /goit-js-hw-11/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Lusiy321/goit-js-hw-10.git"
+    "url": "git+https://github.com/Lusiy321/goit-js-hw-11.git"
   },
   "keywords": [],
-  "author": "Alexander Repeta <alexander.repeta@gmail.com>",
+  "author": "Lusiy321",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/goitacademy/parcel-project-template/issues"
   },
   "dependencies": {
-    "@vimeo/player": "^2.18.0",
     "lodash.debounce": "^4.0.8",
-    "lodash.throttle": "^4.1.1",
     "modern-normalize": "^1.1.0",
     "notiflix": "^3.2.5",
-    "rest-countries-node": "^1.3.0",
-    "simplelightbox": "^2.10.4",
-    "vimeo": "^2.1.1"
+    "simplelightbox": "^2.10.4"
   },
   "devDependencies": {
     "@parcel/transformer-sass": "^2.6.0",
