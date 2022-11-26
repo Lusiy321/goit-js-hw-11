@@ -1,18 +1,21 @@
 import { fetchImg } from './pixabay';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import 'simplelightbox/dist/simple-lightbox.min.css';
+export let page = 1;
 
 const input = document.querySelector('#search-box');
 const container = document.querySelector('.gallery');
-const searchBtn = document.querySelector('.search_btn');
-searchBtn.addEventListener('click', onSearch);
+const form = document.querySelector('.search-form');
+
+form.addEventListener('submit', onSearch);
+let imgData = [];
 
 export function onSearch(e) {
   e.preventDefault();
   const value = input.value.trim();
   fetchImg(value)
-    .then(data => createMarkup(data.hits))
-    .catch(error => {
+    .then(data => createMarkup(data))
+    .catch(e => {
       Notify.failure(
         'Sorry, there are no images matching your search query. Please try again.',
         {
@@ -25,44 +28,52 @@ export function onSearch(e) {
           cssAnimationStyle: 'zoom',
         }
       );
-      return;
+      return (data = imgData);
     });
 }
 
-export function createMarkup(arr) {
-  if (arr.length <= 0) {
+export function createMarkup(imgData) {
+  if (imgData.hits.length <= 0) {
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again.',
       {
         opacity: 0.5,
         position: 'right-top',
-        timeout: 2000,
+        timeout: 1000,
         backOverlay: true,
-        cssAnimationDuration: 300,
-        backOverlayColor: 'rgb(255,255,255)',
+        cssAnimationDuration: 500,
         cssAnimationStyle: 'zoom',
       }
     );
+    container.innerHTML = null;
   } else {
-    const markup = arr
+    Notify.info(`"Hooray! We found ${imgData.total} images."`, {
+      opacity: 0.5,
+      position: 'right-top',
+      timeout: 1000,
+      backOverlay: true,
+      cssAnimationDuration: 500,
+      cssAnimationStyle: 'zoom',
+    });
+    const markup = imgData.hits
       .map(
         item =>
           `<div class="photo-card">
         <a href="${item.largeImageURL}" class="galery__link" rel="noopener noreferrer">
-        <img src="${item.webformatURL}" alt="${item.tags}" width="370" loading="lazy" />
+        <img src="${item.webformatURL}" alt="${item.tags}" width="369" loading="lazy" />
         
         <div class="info">
           <p class="info-item">
-            <b>Likes: ${item.likes}</b>
+            <b>Likes: <span class="info-item__num">${item.likes}</span></b>
           </p>
           <p class="info-item">
-            <b>Views: ${item.views}</b>
+            <b>Views: <span class="info-item__num">${item.views}</span></b>
           </p>
           <p class="info-item">
-            <b>Comments: ${item.comments}</b>
+            <b>Comments: <span class="info-item__num">${item.comments}</span></b>
           </p>
           <p class="info-item">
-            <b>Downloads: ${item.downloads}</b>
+            <b>Downloads: <span class="info-item__num">${item.downloads}</span></b>
           </p>
         </div></a>
       </div>`
@@ -76,3 +87,11 @@ export function createMarkup(arr) {
     return;
   }
 }
+// const { height: cardHeight } = document
+//   .querySelector('.gallery')
+//   .firstElementChild.getBoundingClientRect();
+
+// window.scrollBy({
+//   top: cardHeight * 2,
+//   behavior: 'smooth',
+// });

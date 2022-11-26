@@ -508,19 +508,29 @@ var _searchJs = require("./js/search.js");
 },{"./js/search.js":"4TESp"}],"4TESp":[function(require,module,exports) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
+parcelHelpers.export(exports, "page", ()=>page);
 parcelHelpers.export(exports, "onSearch", ()=>onSearch);
-parcelHelpers.export(exports, "createMarkup", ()=>createMarkup);
+parcelHelpers.export(exports, "createMarkup", ()=>createMarkup) // const { height: cardHeight } = document
+ //   .querySelector('.gallery')
+ //   .firstElementChild.getBoundingClientRect();
+ // window.scrollBy({
+ //   top: cardHeight * 2,
+ //   behavior: 'smooth',
+ // });
+;
 var _pixabay = require("./pixabay");
 var _notiflixNotifyAio = require("notiflix/build/notiflix-notify-aio");
 var _simpleLightboxMinCss = require("simplelightbox/dist/simple-lightbox.min.css");
+let page = 1;
 const input = document.querySelector("#search-box");
 const container = document.querySelector(".gallery");
-const searchBtn = document.querySelector(".search_btn");
-searchBtn.addEventListener("click", onSearch);
+const form = document.querySelector(".search-form");
+form.addEventListener("submit", onSearch);
+let imgData = [];
 function onSearch(e) {
     e.preventDefault();
     const value = input.value.trim();
-    (0, _pixabay.fetchImg)(value).then((data)=>createMarkup(data.hits)).catch((error)=>{
+    (0, _pixabay.fetchImg)(value).then((data)=>createMarkup(data)).catch((e)=>{
         (0, _notiflixNotifyAio.Notify).failure("Sorry, there are no images matching your search query. Please try again.", {
             opacity: 0.5,
             position: "right-top",
@@ -530,36 +540,45 @@ function onSearch(e) {
             backOverlayColor: "rgb(255,255,255)",
             cssAnimationStyle: "zoom"
         });
-        return;
+        return data = imgData;
     });
 }
-function createMarkup(arr) {
-    if (arr.length <= 0) (0, _notiflixNotifyAio.Notify).failure("Sorry, there are no images matching your search query. Please try again.", {
-        opacity: 0.5,
-        position: "right-top",
-        timeout: 2000,
-        backOverlay: true,
-        cssAnimationDuration: 300,
-        backOverlayColor: "rgb(255,255,255)",
-        cssAnimationStyle: "zoom"
-    });
-    else {
-        const markup = arr.map((item)=>`<div class="photo-card">
+function createMarkup(imgData1) {
+    if (imgData1.hits.length <= 0) {
+        (0, _notiflixNotifyAio.Notify).failure("Sorry, there are no images matching your search query. Please try again.", {
+            opacity: 0.5,
+            position: "right-top",
+            timeout: 1000,
+            backOverlay: true,
+            cssAnimationDuration: 500,
+            cssAnimationStyle: "zoom"
+        });
+        container.innerHTML = null;
+    } else {
+        (0, _notiflixNotifyAio.Notify).info(`"Hooray! We found ${imgData1.total} images."`, {
+            opacity: 0.5,
+            position: "right-top",
+            timeout: 1000,
+            backOverlay: true,
+            cssAnimationDuration: 500,
+            cssAnimationStyle: "zoom"
+        });
+        const markup = imgData1.hits.map((item)=>`<div class="photo-card">
         <a href="${item.largeImageURL}" class="galery__link" rel="noopener noreferrer">
-        <img src="${item.webformatURL}" alt="${item.tags}" width="370" loading="lazy" />
+        <img src="${item.webformatURL}" alt="${item.tags}" width="369" loading="lazy" />
         
         <div class="info">
           <p class="info-item">
-            <b>Likes: ${item.likes}</b>
+            <b>Likes: <span class="info-item__num">${item.likes}</span></b>
           </p>
           <p class="info-item">
-            <b>Views: ${item.views}</b>
+            <b>Views: <span class="info-item__num">${item.views}</span></b>
           </p>
           <p class="info-item">
-            <b>Comments: ${item.comments}</b>
+            <b>Comments: <span class="info-item__num">${item.comments}</span></b>
           </p>
           <p class="info-item">
-            <b>Downloads: ${item.downloads}</b>
+            <b>Downloads: <span class="info-item__num">${item.downloads}</span></b>
           </p>
         </div></a>
       </div>`).join("");
@@ -576,15 +595,15 @@ function createMarkup(arr) {
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "fetchImg", ()=>fetchImg);
+var _search = require("./search");
 const URL = "https://pixabay.com/api/?key=31600470-cb6dfcad8308a56e880daea1a&q=";
 const SET = "&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=";
-let page = 1;
 async function fetchImg(value) {
-    const res = await fetch(`${URL}${value}${SET}${page}`);
+    const res = await fetch(`${URL}${value}${SET}${(0, _search.page)}`);
     return await res.json();
 }
 
-},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3"}],"gkKU3":[function(require,module,exports) {
+},{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./search":"4TESp"}],"gkKU3":[function(require,module,exports) {
 exports.interopDefault = function(a) {
     return a && a.__esModule ? a : {
         default: a

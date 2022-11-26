@@ -22,7 +22,7 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   color: #212121;
-  background-color: #dadada99;
+  background-color: #0003;
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Open Sans, Helvetica Neue, sans-serif;
   line-height: 1.5;
@@ -70,7 +70,7 @@ body {
   width: 370px;
   background-color: #fff;
   border: 1px solid #fff;
-  border-top: none;
+  border-radius: 20px 20px 0 0;
   flex-wrap: wrap;
   margin: 10px;
   transition-property: color, background-color, box-shadow, fill;
@@ -95,18 +95,25 @@ a {
 }
 
 img {
-  width: 370px;
-  height: 260px;
   object-fit: cover;
+  border-radius: 20px;
   margin-left: auto;
   margin-right: auto;
+  transition: transform .3s ease-out;
   display: block;
+  box-shadow: 0 1px 1px #0000001f, 0 4px 4px #0000000f, 1px 4px 6px #00000029;
+}
+
+img:hover {
+  border-radius: 20px;
+  transform: scale(1.1);
 }
 
 .info {
   text-align: center;
   align-items: center;
   margin: 0 auto;
+  padding: 0 15px;
   display: flex;
 }
 
@@ -116,6 +123,11 @@ img {
   font-size: 14px;
   line-height: 1.87;
   display: flex;
+}
+
+.info-item__num {
+  color: gray;
+  font-style: italic;
 }
 
 body.hidden-scroll {
