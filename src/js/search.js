@@ -8,7 +8,6 @@ const container = document.querySelector('.gallery');
 const form = document.querySelector('.search-form');
 
 form.addEventListener('submit', onSearch);
-let imgData = [];
 
 export function onSearch(e) {
   e.preventDefault();
@@ -28,7 +27,7 @@ export function onSearch(e) {
           cssAnimationStyle: 'zoom',
         }
       );
-      return (data = imgData);
+      return;
     });
 }
 
@@ -87,11 +86,14 @@ export function createMarkup(imgData) {
     return;
   }
 }
-// const { height: cardHeight } = document
-//   .querySelector('.gallery')
-//   .firstElementChild.getBoundingClientRect();
 
-// window.scrollBy({
-//   top: cardHeight * 2,
-//   behavior: 'smooth',
-// });
+const loadBtn = document.querySelector('.load-more');
+loadBtn.addEventListener('click', loadMore);
+
+function loadMore() {
+  page += 1;
+  const value = input.value.trim();
+  fetchImg(value)
+    .then(data => createMarkup(data))
+    .catch(e => {});
+}

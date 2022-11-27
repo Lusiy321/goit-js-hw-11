@@ -510,14 +510,7 @@ var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "page", ()=>page);
 parcelHelpers.export(exports, "onSearch", ()=>onSearch);
-parcelHelpers.export(exports, "createMarkup", ()=>createMarkup) // const { height: cardHeight } = document
- //   .querySelector('.gallery')
- //   .firstElementChild.getBoundingClientRect();
- // window.scrollBy({
- //   top: cardHeight * 2,
- //   behavior: 'smooth',
- // });
-;
+parcelHelpers.export(exports, "createMarkup", ()=>createMarkup);
 var _pixabay = require("./pixabay");
 var _notiflixNotifyAio = require("notiflix/build/notiflix-notify-aio");
 var _simpleLightboxMinCss = require("simplelightbox/dist/simple-lightbox.min.css");
@@ -526,7 +519,6 @@ const input = document.querySelector("#search-box");
 const container = document.querySelector(".gallery");
 const form = document.querySelector(".search-form");
 form.addEventListener("submit", onSearch);
-let imgData = [];
 function onSearch(e) {
     e.preventDefault();
     const value = input.value.trim();
@@ -540,11 +532,11 @@ function onSearch(e) {
             backOverlayColor: "rgb(255,255,255)",
             cssAnimationStyle: "zoom"
         });
-        return data = imgData;
+        return;
     });
 }
-function createMarkup(imgData1) {
-    if (imgData1.hits.length <= 0) {
+function createMarkup(imgData) {
+    if (imgData.hits.length <= 0) {
         (0, _notiflixNotifyAio.Notify).failure("Sorry, there are no images matching your search query. Please try again.", {
             opacity: 0.5,
             position: "right-top",
@@ -555,7 +547,7 @@ function createMarkup(imgData1) {
         });
         container.innerHTML = null;
     } else {
-        (0, _notiflixNotifyAio.Notify).info(`"Hooray! We found ${imgData1.total} images."`, {
+        (0, _notiflixNotifyAio.Notify).info(`"Hooray! We found ${imgData.total} images."`, {
             opacity: 0.5,
             position: "right-top",
             timeout: 1000,
@@ -563,7 +555,7 @@ function createMarkup(imgData1) {
             cssAnimationDuration: 500,
             cssAnimationStyle: "zoom"
         });
-        const markup = imgData1.hits.map((item)=>`<div class="photo-card">
+        const markup = imgData.hits.map((item)=>`<div class="photo-card">
         <a href="${item.largeImageURL}" class="galery__link" rel="noopener noreferrer">
         <img src="${item.webformatURL}" alt="${item.tags}" width="369" loading="lazy" />
         
@@ -589,6 +581,13 @@ function createMarkup(imgData1) {
         });
         return;
     }
+}
+const loadBtn = document.querySelector(".load-more");
+loadBtn.addEventListener("click", loadMore);
+function loadMore() {
+    page += 1;
+    const value = input.value.trim();
+    (0, _pixabay.fetchImg)(value).then((data)=>createMarkup(data)).catch((e)=>{});
 }
 
 },{"./pixabay":"8MezO","notiflix/build/notiflix-notify-aio":"eXQLZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","simplelightbox/dist/simple-lightbox.min.css":"kaxSc"}],"8MezO":[function(require,module,exports) {
