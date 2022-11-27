@@ -4,18 +4,19 @@
 
 header {
   width: 100%;
-  height: 8%;
+  height: 100px;
   z-index: 3;
   background-color: #3735a8;
-  margin: 0 auto;
+  justify-content: center;
+  gap: 30px;
+  display: flex;
   position: fixed;
   top: 0;
   box-shadow: 0 4px 24px #6969691a;
 }
 
 section {
-  margin: 80px;
-  display: flex;
+  margin: 5%;
 }
 
 body {
@@ -26,6 +27,14 @@ body {
   margin: 0 auto;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu, Cantarell, Open Sans, Helvetica Neue, sans-serif;
   line-height: 1.5;
+}
+
+h1 {
+  color: #000c;
+}
+
+h2 {
+  margin-top: 80px;
 }
 
 .search-form {
@@ -68,30 +77,16 @@ body {
 
 .photo-card {
   width: 370px;
-  background-color: #fff;
-  border: 1px solid #fff;
-  border-radius: 20px 20px 0 0;
+  background-color: #0000;
   flex-wrap: wrap;
   margin: 10px;
-  transition-property: color, background-color, box-shadow, fill;
-  transition-duration: .25s;
-  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
   display: flex;
-}
-
-.photo-card:hover, .photo-card:focus {
-  cursor: pointer;
-  opacity: 1;
-  transition-property: color, background-color, box-shadow, opacity, transform;
-  transition-duration: .25s;
-  transition-timing-function: cubic-bezier(.4, 0, .2, 1);
-  transform: translateY(0);
-  box-shadow: 0 1px 1px #0000001f, 0 4px 4px #0000000f, 1px 4px 6px #00000029;
 }
 
 a {
   color: #212121;
   text-decoration: none;
+  transition: transform .3s ease-out;
 }
 
 img {
@@ -99,34 +94,36 @@ img {
   border-radius: 20px;
   margin-left: auto;
   margin-right: auto;
-  transition: transform .3s ease-out;
   display: block;
   box-shadow: 0 1px 1px #0000001f, 0 4px 4px #0000000f, 1px 4px 6px #00000029;
 }
 
-img:hover {
-  border-radius: 20px;
+a:hover {
   transform: scale(1.1);
 }
 
 .info {
+  width: 369px;
   text-align: center;
+  background-color: #0006;
+  border-radius: 20px;
+  justify-content: space-around;
   align-items: center;
-  margin: 0 auto;
-  padding: 0 15px;
+  margin-top: -80px;
+  padding: 0 30px;
   display: flex;
+  position: absolute;
 }
 
 .info-item {
   letter-spacing: .03em;
-  color: var(--contacts-color);
+  color: #ffffffb3;
   font-size: 14px;
   line-height: 1.87;
-  display: flex;
 }
 
 .info-item__num {
-  color: gray;
+  color: #ffffffb3;
   font-style: italic;
 }
 
