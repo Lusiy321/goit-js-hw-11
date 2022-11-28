@@ -527,21 +527,10 @@ function onSearch(e) {
     container.innerHTML = null;
     page = 1;
     const value = input.value.trim();
-    (0, _pixabay.fetchImg)(value).then((data)=>createMarkup(data)).catch((e)=>{
-        (0, _notiflixNotifyAio.Notify).failure("Sorry, there are no images matching your search query. Please try again1.", {
-            opacity: 0.5,
-            position: "right-top",
-            timeout: 2000,
-            backOverlay: true,
-            cssAnimationDuration: 300,
-            backOverlayColor: "rgb(255,255,255)",
-            cssAnimationStyle: "zoom"
-        });
-    });
+    (0, _pixabay.fetchImg)(value).then((data)=>createMarkup(data));
     return;
 }
 function createMarkup(data) {
-    const elCount = document.getElementsByClassName("gallery")[0].childElementCount;
     if (data.total <= 0) {
         (0, _notiflixNotifyAio.Notify).failure("Sorry, there are no images matching your search query. Please try again2.", {
             opacity: 0.5,
@@ -553,16 +542,7 @@ function createMarkup(data) {
         });
         container.innerHTML = null;
         foundInfo.textContent = null;
-    } else if (data.total === elCount) (0, _notiflixNotifyAio.Notify).info("We're sorry, but you've reached the end of search results.", {
-        opacity: 0.5,
-        position: "right-top",
-        timeout: 2000,
-        backOverlay: true,
-        cssAnimationDuration: 300,
-        backOverlayColor: "rgb(255,255,255)",
-        cssAnimationStyle: "zoom"
-    });
-    else {
+    } else {
         foundInfo.textContent = `We found: ${data.total} images for you`;
         const markup = data.hits.map((item)=>`<div class="photo-card" id="num">
         <a href="${item.largeImageURL}" class="galery__link" rel="noopener noreferrer">
@@ -584,8 +564,6 @@ function createMarkup(data) {
         </div></a>
       </div>`).join("");
         container.insertAdjacentHTML("beforeend", markup);
-        console.log(elCount, data.total);
-        window.addEventListener("scroll", (0, _lodashDebounceDefault.default)(loadMore), 1000);
         new SimpleLightbox(".photo-card a", {
             fadeSpeed: 250,
             captionsData: "alt"
@@ -593,17 +571,23 @@ function createMarkup(data) {
     }
     return;
 }
+window.addEventListener("scroll", (0, _lodashDebounceDefault.default)(loadMore), 500);
 function loadMore() {
-    try {
-        const rect = document.documentElement.getBoundingClientRect();
-        if (rect.bottom <= document.documentElement.clientHeight + 50) {
-            page += 1;
-            const value = input.value.trim();
-            (0, _pixabay.fetchImg)(value).then((data)=>createMarkup(data));
-        }
-    } catch (e) {
-        console.log(error.name);
+    const rect = document.documentElement.getBoundingClientRect();
+    if (rect.bottom <= document.documentElement.clientHeight + 50) {
+        page += 1;
+        const value = input.value.trim();
+        (0, _pixabay.fetchImg)(value).then((data)=>createMarkup(data)).catch((error)=>(0, _notiflixNotifyAio.Notify).info("We're sorry, but you've reached the end of search results.", {
+                opacity: 0.5,
+                position: "right-top",
+                timeout: 500,
+                backOverlay: true,
+                cssAnimationDuration: 500,
+                backOverlayColor: "rgb(255,255,255)",
+                cssAnimationStyle: "zoom"
+            }));
     }
+    return;
 }
 
 },{"./pixabay":"8MezO","notiflix/build/notiflix-notify-aio":"eXQLZ","@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","simplelightbox/dist/simple-lightbox.min.css":"kaxSc","lodash.debounce":"3JP5n"}],"8MezO":[function(require,module,exports) {
@@ -615,6 +599,7 @@ const URL = "https://pixabay.com/api/?key=31600470-cb6dfcad8308a56e880daea1a&q="
 const SET = "&image_type=photo&orientation=horizontal&safesearch=true&per_page=40&page=";
 async function fetchImg(value) {
     const res = await fetch(`${URL}${value}${SET}${(0, _search.page)}`);
+    if (!res.ok || res.status === 400) throw new Error(res.status);
     return await res.json();
 }
 

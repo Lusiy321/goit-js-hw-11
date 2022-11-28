@@ -16,28 +16,10 @@ export function onSearch(e) {
   container.innerHTML = null;
   page = 1;
   const value = input.value.trim();
-  fetchImg(value)
-    .then(data => createMarkup(data))
-    .catch(e => {
-      Notify.failure(
-        'Sorry, there are no images matching your search query. Please try again1.',
-        {
-          opacity: 0.5,
-          position: 'right-top',
-          timeout: 2000,
-          backOverlay: true,
-          cssAnimationDuration: 300,
-          backOverlayColor: 'rgb(255,255,255)',
-          cssAnimationStyle: 'zoom',
-        }
-      );
-    });
+  fetchImg(value).then(data => createMarkup(data));
   return;
 }
 export function createMarkup(data) {
-  const elCount =
-    document.getElementsByClassName('gallery')[0].childElementCount;
-
   if (data.total <= 0) {
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again2.',
@@ -52,16 +34,6 @@ export function createMarkup(data) {
     );
     container.innerHTML = null;
     foundInfo.textContent = null;
-  } else if (data.total === elCount) {
-    Notify.info("We're sorry, but you've reached the end of search results.", {
-      opacity: 0.5,
-      position: 'right-top',
-      timeout: 2000,
-      backOverlay: true,
-      cssAnimationDuration: 300,
-      backOverlayColor: 'rgb(255,255,255)',
-      cssAnimationStyle: 'zoom',
-    });
   } else {
     foundInfo.textContent = `We found: ${data.total} images for you`;
     const markup = data.hits
@@ -89,8 +61,7 @@ export function createMarkup(data) {
       )
       .join('');
     container.insertAdjacentHTML('beforeend', markup);
-    console.log(elCount, data.total);
-    window.addEventListener('scroll', debounce(loadMore), 1000);
+
     new SimpleLightbox('.photo-card a', {
       fadeSpeed: 250,
       captionsData: 'alt',
@@ -99,15 +70,29 @@ export function createMarkup(data) {
   return;
 }
 
+window.addEventListener('scroll', debounce(loadMore), 500);
+
 function loadMore() {
-  try {
-    const rect = document.documentElement.getBoundingClientRect();
-    if (rect.bottom <= document.documentElement.clientHeight + 50) {
-      page += 1;
-      const value = input.value.trim();
-      fetchImg(value).then(data => createMarkup(data));
-    }
-  } catch (e) {
-    console.log(error.name);
+  const rect = document.documentElement.getBoundingClientRect();
+  if (rect.bottom <= document.documentElement.clientHeight + 50) {
+    page += 1;
+    const value = input.value.trim();
+    fetchImg(value)
+      .then(data => createMarkup(data))
+      .catch(error =>
+        Notify.info(
+          "We're sorry, but you've reached the end of search results.",
+          {
+            opacity: 0.5,
+            position: 'right-top',
+            timeout: 500,
+            backOverlay: true,
+            cssAnimationDuration: 500,
+            backOverlayColor: 'rgb(255,255,255)',
+            cssAnimationStyle: 'zoom',
+          }
+        )
+      );
   }
+  return;
 }

@@ -6,5 +6,8 @@ const SET =
 
 export async function fetchImg(value) {
   const res = await fetch(`${URL}${value}${SET}${page}`);
+  if (!res.ok || res.status === 400) {
+    throw new Error(res.status);
+  }
   return await res.json();
 }
