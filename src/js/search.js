@@ -1,45 +1,80 @@
-import { fetchImg } from './pixabay';
+import { fetchImg, PER_PAGE } from './pixabay';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
-import 'simplelightbox/dist/simple-lightbox.min.css';
-import debounce from 'lodash.debounce';
-export let page = 1;
+import { simpleGallery } from './lightbox';
 
-const input = document.querySelector('#search-box');
+export let page = 1;
+export let totalHits = '';
 const container = document.querySelector('.gallery');
 const form = document.querySelector('.search-form');
 const foundInfo = document.querySelector('.found');
-
+const gg = document.querySelector('.js-gg');
+let value = '';
 form.addEventListener('submit', onSearch);
 
 export function onSearch(e) {
   e.preventDefault();
+  observer.unobserve(gg);
   container.innerHTML = null;
+  foundInfo.textContent = null;
   page = 1;
-  const value = input.value.trim();
-  fetchImg(value).then(res => createMarkup(res.data));
-  return;
-}
-export function createMarkup(data) {
-  if (data.total <= 0) {
-    Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again.',
-      {
-        opacity: 0.5,
+  value = e.currentTarget.searchQuery.value.trim();
+  e.currentTarget.reset();
+  if (!value) {
+    Notify.failure('Wrong value', {
+      opacity: 0.5,
+      position: 'right-top',
+      timeout: 1000,
+      backOverlay: true,
+      cssAnimationDuration: 1000,
+      cssAnimationStyle: 'zoom',
+    });
+    return;
+  }
+
+  fetchImg(value, page)
+    .then(res => {
+      totalHits = res.data.total;
+      if (!res.data.total) {
+        return Notify.failure(
+          'Sorry, there are no images matching your search query. Please try again.',
+          {
+            opacity: 0.9,
+            position: 'right-top',
+            timeout: 1000,
+            backOverlay: true,
+            cssAnimationDuration: 2000,
+            cssAnimationStyle: 'zoom',
+          }
+        );
+      }
+      Notify.success(`Hooray! We found ${res.data.total} images.`, {
+        opacity: 0.9,
         position: 'right-top',
         timeout: 1000,
-        backOverlay: true,
         cssAnimationDuration: 2000,
         cssAnimationStyle: 'zoom',
-      }
-    );
-    container.innerHTML = null;
-    foundInfo.textContent = null;
-  } else {
-    foundInfo.textContent = `We found: ${data.total} images for you`;
-    const markup = data.hits
-      .map(
-        item =>
-          `<div class="photo-card" id="num">
+      });
+      foundInfo.textContent = `We found: ${res.data.total} images for you`;
+      createMarkup(res.data);
+      simpleGallery.refresh();
+      const { height: cardHeight } = document
+        .querySelector('.gallery')
+        .firstElementChild.getBoundingClientRect();
+
+      window.scrollBy({
+        top: cardHeight * 2,
+        behavior: 'smooth',
+      });
+      observer.observe(gg);
+    })
+    .catch(error => console.log(error));
+}
+
+export function createMarkup(data) {
+  const markup = data.hits
+    .map(
+      item =>
+        `<div class="photo-card" id="num">
         <a href="${item.largeImageURL}" class="galery__link" rel="noopener noreferrer">
         <img src="${item.webformatURL}" alt="${item.tags}" width="369" loading="lazy" />
         
@@ -58,40 +93,75 @@ export function createMarkup(data) {
           </p>
         </div></a>
       </div>`
-      )
-      .join('');
-    container.insertAdjacentHTML('beforeend', markup);
-    new SimpleLightbox('.photo-card a', {
-      fadeSpeed: 250,
-      captionsData: 'alt',
-    });
-  }
+    )
+    .join('');
+  container.insertAdjacentHTML('beforeend', markup);
+  simpleGallery.refresh();
   return;
 }
 
-window.addEventListener('scroll', debounce(loadMore), 300);
+const options = {
+  root: null,
+  rootMargin: '100px',
+  threshold: 1.0,
+};
 
-function loadMore() {
-  const rect = document.documentElement.getBoundingClientRect();
-  if (rect.bottom <= document.documentElement.clientHeight + 1000) {
-    page += 1;
-    const value = input.value.trim();
-    fetchImg(value)
-      .then(res => createMarkup(res.data))
-      .catch(
-        Error =>
-          (Error = Notify.info(
-            "We're sorry, but you've reached the end of search results.",
-            {
-              opacity: 0.8,
-              position: 'right-top',
-              timeout: 1000,
-              backOverlay: true,
-              cssAnimationDuration: 2000,
-              cssAnimationStyle: 'zoom',
-            }
-          ))
+const observer = new IntersectionObserver(loadMore, options);
+
+function loadMore(resp, observer) {
+  resp.forEach(res => {
+    if (res.isIntersecting) {
+      page += 1;
+
+      fetchImg(value, page)
+        .then(res => {
+          createMarkup(res.data);
+          const { height: cardHeight } = document
+            .querySelector('.gallery')
+            .firstElementChild.getBoundingClientRect();
+
+          window.scrollBy({
+            top: cardHeight * 2,
+            behavior: 'smooth',
+          });
+        })
+        .catch(error => {
+          console.log(error);
+        });
+
+      if (page === Math.round(totalHits / PER_PAGE)) {
+        observer.unobserve(gg);
+        observerBottom.observe(gg);
+        page = 1;
+      }
+    }
+  });
+}
+const optionsBottom = {
+  root: null,
+  rootMargin: '1px',
+  threshold: 1.0,
+};
+
+export const observerBottom = new IntersectionObserver(
+  OnBottomMessage,
+  optionsBottom
+);
+
+function OnBottomMessage(entries, observerBottom) {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      Notify.info(
+        "We're sorry, but you've reached the end of search results.",
+        {
+          opacity: 0.9,
+          position: 'right-top',
+          timeout: 1000,
+          backOverlay: true,
+          cssAnimationDuration: 2000,
+          cssAnimationStyle: 'zoom',
+        }
       );
-  }
-  return;
+    }
+  });
 }
