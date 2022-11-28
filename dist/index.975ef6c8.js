@@ -531,14 +531,13 @@ function onSearch(e) {
     return;
 }
 function createMarkup(data) {
-    console.log(data);
     if (data.total <= 0) {
-        (0, _notiflixNotifyAio.Notify).failure("Sorry, there are no images matching your search query. Please try again2.", {
+        (0, _notiflixNotifyAio.Notify).failure("Sorry, there are no images matching your search query. Please try again.", {
             opacity: 0.5,
             position: "right-top",
             timeout: 1000,
             backOverlay: true,
-            cssAnimationDuration: 500,
+            cssAnimationDuration: 2000,
             cssAnimationStyle: "zoom"
         });
         container.innerHTML = null;
@@ -572,19 +571,18 @@ function createMarkup(data) {
     }
     return;
 }
-window.addEventListener("scroll", (0, _lodashDebounceDefault.default)(loadMore), 500);
+window.addEventListener("scroll", (0, _lodashDebounceDefault.default)(loadMore), 300);
 function loadMore() {
     const rect = document.documentElement.getBoundingClientRect();
-    if (rect.bottom <= document.documentElement.clientHeight + 50) {
+    if (rect.bottom <= document.documentElement.clientHeight + 1000) {
         page += 1;
         const value = input.value.trim();
-        (0, _pixabay.fetchImg)(value).then((res)=>createMarkup(res.data)).catch((error)=>(0, _notiflixNotifyAio.Notify).info("We're sorry, but you've reached the end of search results.", {
-                opacity: 0.5,
+        (0, _pixabay.fetchImg)(value).then((res)=>createMarkup(res.data)).catch((Error)=>Error = (0, _notiflixNotifyAio.Notify).info("We're sorry, but you've reached the end of search results.", {
+                opacity: 0.8,
                 position: "right-top",
-                timeout: 500,
+                timeout: 1000,
                 backOverlay: true,
-                cssAnimationDuration: 500,
-                backOverlayColor: "rgb(255,255,255)",
+                cssAnimationDuration: 2000,
                 cssAnimationStyle: "zoom"
             }));
     }
@@ -604,7 +602,9 @@ async function fetchImg(value) {
     try {
         const res = await (0, _axiosDefault.default).get(`${URL}${value}${SET}${(0, _search.page)}`);
         return res;
-    } catch (e) {}
+    } catch (e) {
+        return Error;
+    }
 }
 
 },{"@parcel/transformer-js/src/esmodule-helpers.js":"gkKU3","./search":"4TESp","axios":"jo6P5"}],"gkKU3":[function(require,module,exports) {

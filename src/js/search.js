@@ -20,16 +20,15 @@ export function onSearch(e) {
   return;
 }
 export function createMarkup(data) {
-  console.log(data);
   if (data.total <= 0) {
     Notify.failure(
-      'Sorry, there are no images matching your search query. Please try again2.',
+      'Sorry, there are no images matching your search query. Please try again.',
       {
         opacity: 0.5,
         position: 'right-top',
         timeout: 1000,
         backOverlay: true,
-        cssAnimationDuration: 500,
+        cssAnimationDuration: 2000,
         cssAnimationStyle: 'zoom',
       }
     );
@@ -62,7 +61,6 @@ export function createMarkup(data) {
       )
       .join('');
     container.insertAdjacentHTML('beforeend', markup);
-
     new SimpleLightbox('.photo-card a', {
       fadeSpeed: 250,
       captionsData: 'alt',
@@ -71,28 +69,28 @@ export function createMarkup(data) {
   return;
 }
 
-window.addEventListener('scroll', debounce(loadMore), 500);
+window.addEventListener('scroll', debounce(loadMore), 300);
 
 function loadMore() {
   const rect = document.documentElement.getBoundingClientRect();
-  if (rect.bottom <= document.documentElement.clientHeight + 50) {
+  if (rect.bottom <= document.documentElement.clientHeight + 1000) {
     page += 1;
     const value = input.value.trim();
     fetchImg(value)
       .then(res => createMarkup(res.data))
-      .catch(error =>
-        Notify.info(
-          "We're sorry, but you've reached the end of search results.",
-          {
-            opacity: 0.5,
-            position: 'right-top',
-            timeout: 500,
-            backOverlay: true,
-            cssAnimationDuration: 500,
-            backOverlayColor: 'rgb(255,255,255)',
-            cssAnimationStyle: 'zoom',
-          }
-        )
+      .catch(
+        Error =>
+          (Error = Notify.info(
+            "We're sorry, but you've reached the end of search results.",
+            {
+              opacity: 0.8,
+              position: 'right-top',
+              timeout: 1000,
+              backOverlay: true,
+              cssAnimationDuration: 2000,
+              cssAnimationStyle: 'zoom',
+            }
+          ))
       );
   }
   return;

@@ -9,5 +9,7 @@ export async function fetchImg(value) {
   try {
     const res = await axios.get(`${URL}${value}${SET}${page}`);
     return res;
-  } catch (e) {}
+  } catch (e) {
+    return Error;
+  }
 }
