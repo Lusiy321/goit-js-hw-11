@@ -16,10 +16,11 @@ export function onSearch(e) {
   container.innerHTML = null;
   page = 1;
   const value = input.value.trim();
-  fetchImg(value).then(data => createMarkup(data));
+  fetchImg(value).then(res => createMarkup(res.data));
   return;
 }
 export function createMarkup(data) {
+  console.log(data);
   if (data.total <= 0) {
     Notify.failure(
       'Sorry, there are no images matching your search query. Please try again2.',
@@ -78,7 +79,7 @@ function loadMore() {
     page += 1;
     const value = input.value.trim();
     fetchImg(value)
-      .then(data => createMarkup(data))
+      .then(res => createMarkup(res.data))
       .catch(error =>
         Notify.info(
           "We're sorry, but you've reached the end of search results.",
