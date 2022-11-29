@@ -553,7 +553,7 @@ async function onSearch(e) {
                 cssAnimationDuration: 2000,
                 cssAnimationStyle: "zoom"
             });
-            else if (totalHits < 40) (0, _notiflixNotifyAio.Notify).info("We're sorry, but you've reached the end of search results.", {
+            else if (totalHits < 40 && totalHits != 0) (0, _notiflixNotifyAio.Notify).info("We're sorry, but you've reached the end of search results.", {
                 opacity: 0.9,
                 position: "right-top",
                 timeout: 500,

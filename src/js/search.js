@@ -45,7 +45,7 @@ export async function onSearch(e) {
             cssAnimationStyle: 'zoom',
           }
         );
-      } else if (totalHits < 40) {
+      } else if (totalHits < 40 && totalHits != 0) {
         Notify.info(
           "We're sorry, but you've reached the end of search results.",
           {
