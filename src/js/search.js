@@ -11,7 +11,7 @@ const gg = document.querySelector('.js-gg');
 let value = '';
 form.addEventListener('submit', onSearch);
 
-export function onSearch(e) {
+export async function onSearch(e) {
   e.preventDefault();
   observer.unobserve(gg);
   container.innerHTML = null;
@@ -30,17 +30,28 @@ export function onSearch(e) {
     });
     return;
   }
-
-  fetchImg(value, page)
-    .then(res => {
-      totalHits = res.data.total;
-      if (!res.data.total) {
+  try {
+    await fetchImg(value, page).then(res => {
+      totalHits = res.data.totalHits;
+      if (!res.data.totalHits) {
         return Notify.failure(
           'Sorry, there are no images matching your search query. Please try again.',
           {
             opacity: 0.9,
             position: 'right-top',
             timeout: 1000,
+            backOverlay: true,
+            cssAnimationDuration: 2000,
+            cssAnimationStyle: 'zoom',
+          }
+        );
+      } else if (totalHits < 40) {
+        Notify.info(
+          "We're sorry, but you've reached the end of search results.",
+          {
+            opacity: 0.9,
+            position: 'right-top',
+            timeout: 500,
             backOverlay: true,
             cssAnimationDuration: 2000,
             cssAnimationStyle: 'zoom',
@@ -66,8 +77,10 @@ export function onSearch(e) {
         behavior: 'smooth',
       });
       observer.observe(gg);
-    })
-    .catch(error => console.log(error));
+    });
+  } catch (e) {
+    return Error;
+  }
 }
 
 export function createMarkup(data) {
@@ -102,19 +115,19 @@ export function createMarkup(data) {
 
 const options = {
   root: null,
-  rootMargin: '100px',
+  rootMargin: '50px',
   threshold: 1.0,
 };
 
 const observer = new IntersectionObserver(loadMore, options);
 
-function loadMore(resp, observer) {
-  resp.forEach(res => {
-    if (res.isIntersecting) {
-      page += 1;
+async function loadMore(resp, observer) {
+  try {
+    await resp.forEach(res => {
+      if (res.isIntersecting) {
+        page += 1;
 
-      fetchImg(value, page)
-        .then(res => {
+        fetchImg(value, page).then(res => {
           createMarkup(res.data);
           const { height: cardHeight } = document
             .querySelector('.gallery')
@@ -124,39 +137,37 @@ function loadMore(resp, observer) {
             top: cardHeight * 2,
             behavior: 'smooth',
           });
-        })
-        .catch(error => {
-          console.log(error);
         });
 
-      if (page === Math.round(totalHits / PER_PAGE)) {
-        observer.unobserve(gg);
-        observerBottom.observe(gg);
-        page = 1;
+        if (page === Math.round(totalHits / PER_PAGE)) {
+          observer.unobserve(gg);
+          observerBottom.observe(gg);
+          page = 1;
+        }
       }
-    }
-  });
+    });
+  } catch (e) {
+    return Error;
+  }
 }
+
 const optionsBottom = {
   root: null,
   rootMargin: '1px',
   threshold: 1.0,
 };
 
-export const observerBottom = new IntersectionObserver(
-  OnBottomMessage,
-  optionsBottom
-);
+const observerBottom = new IntersectionObserver(OnBottomMessage, optionsBottom);
 
-function OnBottomMessage(entries, observerBottom) {
-  entries.forEach(entry => {
+async function OnBottomMessage(entries, observerBottom) {
+  await entries.forEach(entry => {
     if (entry.isIntersecting) {
       Notify.info(
         "We're sorry, but you've reached the end of search results.",
         {
           opacity: 0.9,
           position: 'right-top',
-          timeout: 1000,
+          timeout: 500,
           backOverlay: true,
           cssAnimationDuration: 2000,
           cssAnimationStyle: 'zoom',

@@ -512,7 +512,6 @@ parcelHelpers.export(exports, "page", ()=>page);
 parcelHelpers.export(exports, "totalHits", ()=>totalHits);
 parcelHelpers.export(exports, "onSearch", ()=>onSearch);
 parcelHelpers.export(exports, "createMarkup", ()=>createMarkup);
-parcelHelpers.export(exports, "observerBottom", ()=>observerBottom);
 var _pixabay = require("./pixabay");
 var _notiflixNotifyAio = require("notiflix/build/notiflix-notify-aio");
 var _lightbox = require("./lightbox");
@@ -524,7 +523,7 @@ const foundInfo = document.querySelector(".found");
 const gg = document.querySelector(".js-gg");
 let value = "";
 form.addEventListener("submit", onSearch);
-function onSearch(e) {
+async function onSearch(e) {
     e.preventDefault();
     observer.unobserve(gg);
     container.innerHTML = null;
@@ -543,33 +542,45 @@ function onSearch(e) {
         });
         return;
     }
-    (0, _pixabay.fetchImg)(value, page).then((res)=>{
-        totalHits = res.data.total;
-        if (!res.data.total) return (0, _notiflixNotifyAio.Notify).failure("Sorry, there are no images matching your search query. Please try again.", {
-            opacity: 0.9,
-            position: "right-top",
-            timeout: 1000,
-            backOverlay: true,
-            cssAnimationDuration: 2000,
-            cssAnimationStyle: "zoom"
+    try {
+        await (0, _pixabay.fetchImg)(value, page).then((res)=>{
+            totalHits = res.data.totalHits;
+            if (!res.data.totalHits) return (0, _notiflixNotifyAio.Notify).failure("Sorry, there are no images matching your search query. Please try again.", {
+                opacity: 0.9,
+                position: "right-top",
+                timeout: 1000,
+                backOverlay: true,
+                cssAnimationDuration: 2000,
+                cssAnimationStyle: "zoom"
+            });
+            else if (totalHits < 40) (0, _notiflixNotifyAio.Notify).info("We're sorry, but you've reached the end of search results.", {
+                opacity: 0.9,
+                position: "right-top",
+                timeout: 500,
+                backOverlay: true,
+                cssAnimationDuration: 2000,
+                cssAnimationStyle: "zoom"
+            });
+            (0, _notiflixNotifyAio.Notify).success(`Hooray! We found ${res.data.total} images.`, {
+                opacity: 0.9,
+                position: "right-top",
+                timeout: 1000,
+                cssAnimationDuration: 2000,
+                cssAnimationStyle: "zoom"
+            });
+            foundInfo.textContent = `We found: ${res.data.total} images for you`;
+            createMarkup(res.data);
+            (0, _lightbox.simpleGallery).refresh();
+            const { height: cardHeight  } = document.querySelector(".gallery").firstElementChild.getBoundingClientRect();
+            window.scrollBy({
+                top: cardHeight * 2,
+                behavior: "smooth"
+            });
+            observer.observe(gg);
         });
-        (0, _notiflixNotifyAio.Notify).success(`Hooray! We found ${res.data.total} images.`, {
-            opacity: 0.9,
-            position: "right-top",
-            timeout: 1000,
-            cssAnimationDuration: 2000,
-            cssAnimationStyle: "zoom"
-        });
-        foundInfo.textContent = `We found: ${res.data.total} images for you`;
-        createMarkup(res.data);
-        (0, _lightbox.simpleGallery).refresh();
-        const { height: cardHeight  } = document.querySelector(".gallery").firstElementChild.getBoundingClientRect();
-        window.scrollBy({
-            top: cardHeight * 2,
-            behavior: "smooth"
-        });
-        observer.observe(gg);
-    }).catch((error)=>console.log(error));
+    } catch (e1) {
+        return Error;
+    }
 }
 function createMarkup(data) {
     const markup = data.hits.map((item)=>`<div class="photo-card" id="num">
@@ -597,31 +608,33 @@ function createMarkup(data) {
 }
 const options = {
     root: null,
-    rootMargin: "100px",
+    rootMargin: "50px",
     threshold: 1.0
 };
 const observer = new IntersectionObserver(loadMore, options);
-function loadMore(resp, observer1) {
-    resp.forEach((res1)=>{
-        if (res1.isIntersecting) {
-            page += 1;
-            (0, _pixabay.fetchImg)(value, page).then((res)=>{
-                createMarkup(res.data);
-                const { height: cardHeight  } = document.querySelector(".gallery").firstElementChild.getBoundingClientRect();
-                window.scrollBy({
-                    top: cardHeight * 2,
-                    behavior: "smooth"
+async function loadMore(resp, observer1) {
+    try {
+        await resp.forEach((res1)=>{
+            if (res1.isIntersecting) {
+                page += 1;
+                (0, _pixabay.fetchImg)(value, page).then((res)=>{
+                    createMarkup(res.data);
+                    const { height: cardHeight  } = document.querySelector(".gallery").firstElementChild.getBoundingClientRect();
+                    window.scrollBy({
+                        top: cardHeight * 2,
+                        behavior: "smooth"
+                    });
                 });
-            }).catch((error)=>{
-                console.log(error);
-            });
-            if (page === Math.round(totalHits / (0, _pixabay.PER_PAGE))) {
-                observer1.unobserve(gg);
-                observerBottom.observe(gg);
-                page = 1;
+                if (page === Math.round(totalHits / (0, _pixabay.PER_PAGE))) {
+                    observer1.unobserve(gg);
+                    observerBottom.observe(gg);
+                    page = 1;
+                }
             }
-        }
-    });
+        });
+    } catch (e) {
+        return Error;
+    }
 }
 const optionsBottom = {
     root: null,
@@ -629,12 +642,12 @@ const optionsBottom = {
     threshold: 1.0
 };
 const observerBottom = new IntersectionObserver(OnBottomMessage, optionsBottom);
-function OnBottomMessage(entries, observerBottom) {
-    entries.forEach((entry)=>{
+async function OnBottomMessage(entries, observerBottom) {
+    await entries.forEach((entry)=>{
         if (entry.isIntersecting) (0, _notiflixNotifyAio.Notify).info("We're sorry, but you've reached the end of search results.", {
             opacity: 0.9,
             position: "right-top",
-            timeout: 1000,
+            timeout: 500,
             backOverlay: true,
             cssAnimationDuration: 2000,
             cssAnimationStyle: "zoom"
@@ -654,9 +667,9 @@ const URL = "https://pixabay.com/api/?key=";
 const KEY = "31600470-cb6dfcad8308a56e880daea1a";
 const SET = "&image_type=photo&orientation=horizontal&safesearch=true&per_page=";
 const PER_PAGE = 40;
-async function fetchImg(value) {
+async function fetchImg(value, page) {
     try {
-        const res = await (0, _axiosDefault.default).get(`${URL}${KEY}&q=${value}${SET}${PER_PAGE}&page=${(0, _search.page)}`);
+        const res = await (0, _axiosDefault.default).get(`${URL}${KEY}&q=${value}${SET}${PER_PAGE}&page=${page}`);
         return res;
     } catch (e) {
         return Error;
