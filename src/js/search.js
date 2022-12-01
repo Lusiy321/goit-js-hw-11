@@ -83,8 +83,8 @@ export async function onSearch(e) {
   }
 }
 
-export function createMarkup(data) {
-  const markup = data.hits
+export async function createMarkup(data) {
+  const markup = await data.hits
     .map(
       item =>
         `<div class="photo-card" id="num">
