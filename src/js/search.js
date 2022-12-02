@@ -121,9 +121,9 @@ const options = {
 
 const observer = new IntersectionObserver(loadMore, options);
 
-async function loadMore(resp, observer) {
+function loadMore(resp, observer) {
   try {
-    await resp.forEach(res => {
+    resp.forEach(res => {
       if (res.isIntersecting) {
         page += 1;
 
