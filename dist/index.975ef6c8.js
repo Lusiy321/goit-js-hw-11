@@ -635,7 +635,7 @@ async function loadMore(entries1, observer1) {
 }
 const optionsBottom = {
     root: null,
-    rootMargin: "1px",
+    rootMargin: "10px",
     threshold: 1.0
 };
 const observerBottom = new IntersectionObserver(OnBottomMessage, optionsBottom);

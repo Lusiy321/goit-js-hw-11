@@ -151,7 +151,7 @@ async function loadMore(entries, observer) {
 
 const optionsBottom = {
   root: null,
-  rootMargin: '1px',
+  rootMargin: '10px',
   threshold: 1.0,
 };
 
