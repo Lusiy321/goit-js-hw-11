@@ -3,7 +3,8 @@ import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { simpleGallery } from './lightbox';
 
 export let page = 1;
-export let totalHits = '';
+let totalHits = '';
+
 const container = document.querySelector('.gallery');
 const form = document.querySelector('.search-form');
 const foundInfo = document.querySelector('.found');
@@ -83,8 +84,8 @@ export async function onSearch(e) {
   }
 }
 
-export async function createMarkup(data) {
-  const markup = await data.hits
+export function createMarkup(data) {
+  const markup = data.hits
     .map(
       item =>
         `<div class="photo-card" id="num">
@@ -119,12 +120,12 @@ const options = {
   threshold: 1.0,
 };
 
-const observer = new IntersectionObserver(loadMore, options);
+export const observer = new IntersectionObserver(loadMore, options);
 
-function loadMore(resp, observer) {
+async function loadMore(entries, observer) {
   try {
-    resp.forEach(res => {
-      if (res.isIntersecting) {
+    await entries.forEach(entries => {
+      if (entries.isIntersecting) {
         page += 1;
 
         fetchImg(value, page).then(res => {
@@ -159,7 +160,7 @@ const optionsBottom = {
 
 const observerBottom = new IntersectionObserver(OnBottomMessage, optionsBottom);
 
-async function OnBottomMessage(entries, observerBottom) {
+async function OnBottomMessage(entries) {
   await entries.forEach(entry => {
     if (entry.isIntersecting) {
       Notify.info(
@@ -169,7 +170,7 @@ async function OnBottomMessage(entries, observerBottom) {
           position: 'right-top',
           timeout: 500,
           backOverlay: true,
-          cssAnimationDuration: 2000,
+          cssAnimationDuration: 1000,
           cssAnimationStyle: 'zoom',
         }
       );

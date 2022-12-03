@@ -509,9 +509,9 @@ var _searchJs = require("./js/search.js");
 var parcelHelpers = require("@parcel/transformer-js/src/esmodule-helpers.js");
 parcelHelpers.defineInteropFlag(exports);
 parcelHelpers.export(exports, "page", ()=>page);
-parcelHelpers.export(exports, "totalHits", ()=>totalHits);
 parcelHelpers.export(exports, "onSearch", ()=>onSearch);
 parcelHelpers.export(exports, "createMarkup", ()=>createMarkup);
+parcelHelpers.export(exports, "observer", ()=>observer);
 var _pixabay = require("./pixabay");
 var _notiflixNotifyAio = require("notiflix/build/notiflix-notify-aio");
 var _lightbox = require("./lightbox");
@@ -612,10 +612,10 @@ const options = {
     threshold: 1.0
 };
 const observer = new IntersectionObserver(loadMore, options);
-async function loadMore(resp, observer1) {
+async function loadMore(entries1, observer1) {
     try {
-        await resp.forEach((res1)=>{
-            if (res1.isIntersecting) {
+        await entries1.forEach((entries)=>{
+            if (entries.isIntersecting) {
                 page += 1;
                 (0, _pixabay.fetchImg)(value, page).then((res)=>{
                     createMarkup(res.data);
@@ -642,14 +642,14 @@ const optionsBottom = {
     threshold: 1.0
 };
 const observerBottom = new IntersectionObserver(OnBottomMessage, optionsBottom);
-async function OnBottomMessage(entries, observerBottom) {
+async function OnBottomMessage(entries) {
     await entries.forEach((entry)=>{
         if (entry.isIntersecting) (0, _notiflixNotifyAio.Notify).info("We're sorry, but you've reached the end of search results.", {
             opacity: 0.9,
             position: "right-top",
             timeout: 500,
             backOverlay: true,
-            cssAnimationDuration: 2000,
+            cssAnimationDuration: 1000,
             cssAnimationStyle: "zoom"
         });
     });
