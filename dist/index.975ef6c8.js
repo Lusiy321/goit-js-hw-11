@@ -534,7 +534,7 @@ async function onSearch(e) {
     if (!value) {
         (0, _notiflixNotifyAio.Notify).failure("Wrong value", {
             opacity: 0.5,
-            position: "right-top",
+            position: "center-center",
             timeout: 1000,
             backOverlay: true,
             cssAnimationDuration: 1000,
@@ -547,7 +547,7 @@ async function onSearch(e) {
             totalHits = res.data.totalHits;
             if (!res.data.totalHits) return (0, _notiflixNotifyAio.Notify).failure("Sorry, there are no images matching your search query. Please try again.", {
                 opacity: 0.9,
-                position: "right-top",
+                position: "center-center",
                 timeout: 1000,
                 backOverlay: true,
                 cssAnimationDuration: 2000,
@@ -563,7 +563,7 @@ async function onSearch(e) {
             });
             (0, _notiflixNotifyAio.Notify).success(`Hooray! We found ${res.data.total} images.`, {
                 opacity: 0.9,
-                position: "right-top",
+                position: "center-center",
                 timeout: 1000,
                 cssAnimationDuration: 2000,
                 cssAnimationStyle: "zoom"
@@ -646,7 +646,7 @@ async function OnBottomMessage(entries) {
     await entries.forEach((entry)=>{
         if (entry.isIntersecting) (0, _notiflixNotifyAio.Notify).info("We're sorry, but you've reached the end of search results.", {
             opacity: 0.9,
-            position: "right-top",
+            position: "center-center",
             timeout: 500,
             backOverlay: true,
             cssAnimationDuration: 1000,
