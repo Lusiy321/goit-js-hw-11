@@ -167,3 +167,7 @@ a:hover {
   color: rgba(255, 255, 255, 0.7);
   font-style: italic;
 }
+
+span {
+  font-size: 20px;
+}

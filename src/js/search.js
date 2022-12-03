@@ -22,12 +22,11 @@ export async function onSearch(e) {
   e.currentTarget.reset();
   if (!value) {
     Notify.failure('Wrong value', {
-      opacity: 0.5,
+      opacity: 0.9,
       position: 'center-center',
-      timeout: 1000,
-      backOverlay: true,
+      timeout: 2000,
       cssAnimationDuration: 1000,
-      cssAnimationStyle: 'zoom',
+      cssAnimationStyle: 'fade',
     });
     return;
   }
@@ -40,10 +39,9 @@ export async function onSearch(e) {
           {
             opacity: 0.9,
             position: 'center-center',
-            timeout: 1000,
-            backOverlay: true,
-            cssAnimationDuration: 2000,
-            cssAnimationStyle: 'zoom',
+            timeout: 2000,
+            cssAnimationDuration: 1000,
+            cssAnimationStyle: 'fade',
           }
         );
       } else if (totalHits < 40 && totalHits != 0) {
@@ -52,19 +50,18 @@ export async function onSearch(e) {
           {
             opacity: 0.9,
             position: 'right-top',
-            timeout: 500,
-            backOverlay: true,
-            cssAnimationDuration: 2000,
-            cssAnimationStyle: 'zoom',
+            timeout: 2000,
+            cssAnimationDuration: 1000,
+            cssAnimationStyle: 'fade',
           }
         );
       }
       Notify.success(`Hooray! We found ${res.data.total} images.`, {
         opacity: 0.9,
         position: 'center-center',
-        timeout: 1000,
-        cssAnimationDuration: 2000,
-        cssAnimationStyle: 'zoom',
+        timeout: 2000,
+        cssAnimationDuration: 1000,
+        cssAnimationStyle: 'fade',
       });
       foundInfo.textContent = `We found: ${res.data.total} images for you`;
       createMarkup(res.data);
@@ -168,10 +165,9 @@ async function OnBottomMessage(entries) {
         {
           opacity: 0.9,
           position: 'center-center',
-          timeout: 500,
-          backOverlay: true,
+          timeout: 2000,
           cssAnimationDuration: 1000,
-          cssAnimationStyle: 'zoom',
+          cssAnimationStyle: 'fade',
         }
       );
     }
