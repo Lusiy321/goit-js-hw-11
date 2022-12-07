@@ -5371,8 +5371,8 @@ var _simpleLightboxMinCss = require("simplelightbox/dist/simple-lightbox.min.css
 let simpleGallery = new (0, _simplelightboxDefault.default)(".gallery a", {
     captionsData: "alt",
     loop: true,
-    captionDelay: 300,
-    animationSpeed: 300,
+    captionDelay: 400,
+    animationSpeed: 400,
     animationSlide: true
 });
 

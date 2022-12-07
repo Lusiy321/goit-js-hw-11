@@ -45,7 +45,7 @@ h1 {
   h1 {
     margin: 0 auto;
     padding-left: 20px;
-    font-size: 15px;
+    font-size: 16px;
   }
 }
 
@@ -146,7 +146,7 @@ a:hover {
   border-radius: 20px;
   justify-content: space-around;
   align-items: center;
-  margin-top: -80px;
+  margin-top: -91px;
   padding: 0 30px;
   display: flex;
   position: absolute;
